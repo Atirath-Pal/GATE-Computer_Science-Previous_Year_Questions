@@ -1,0 +1,38 @@
+[
+  {
+  "id": "2026-set2-1",
+  "number": 1,
+  "tag": ["General Aptitude"],
+  "type": "MCQ",
+  "marks": 1,
+  "questionText": "Set 1 demo Expedite, Hasten, Hurry, __________\n\nFill the blank by choosing a word with a meaning similar to that of the words given above. ",
+  "imageUrl": null,
+  "optionsType": "text",
+  "options": [
+    "Accelerate",
+    "Retard",
+    "Provide",
+    "Disable"
+  ],
+  "correctAnswer": ["A"],
+  "videoUrl": "https://youtu.be/your-video-id"
+},
+  {
+  "id": "2026-set2-2",
+  "number": 2,
+  "tag": ["General Aptitude"],
+  "type": "MCQ",
+  "marks": 1,
+  "questionText": "Set 1 demo A black square PQRS has been cut into two parts. One part of it is shown in Panel I. Which one of the shapes in Panel II is the other part?",
+  "imageUrl": "/data/images/gate-2026-set-2/q2.png",
+  "optionsType": "text",
+  "options": [
+    "(i)",
+    "(ii)",
+    "(iii)",
+    "(iv)"
+  ],
+  "correctAnswer": ["C"],
+  "videoUrl": "https://youtu.be/your-video-id"
+  }
+]
