@@ -2,25 +2,26 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
 function PaperPage() {
-  const { year } = useParams();
+  const { fileName } = useParams(); // e.g., "gate-2026-set-2.json"
   const [questions, setQuestions] = useState([]);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch the JSON file whenever the "year" parameter changes
+  // Fetch the JSON file whenever the "fileName" parameter changes
   useEffect(() => {
     setLoading(true);
     setError(null);
-    setSelectedIdx(0); // Reset to question 1 when swapping years
+    setSelectedIdx(0); // Reset to question 1 when swapping papers
 
-    // Using import.meta.env.BASE_URL handles subdirectory routing on GitHub Pages perfectly
-    const fetchUrl = `${import.meta.env.BASE_URL}data/questions/gate-${year}.json`;
+    const decodedFileName = decodeURIComponent(fileName);
+    // Fetch directly from the questions directory
+    const fetchUrl = `${import.meta.env.BASE_URL}data/questions/${decodedFileName}`;
 
     fetch(fetchUrl)
       .then((res) => {
         if (!res.ok) {
-          throw new Error(`Could not find question data for GATE CS ${year}`);
+          throw new Error(`Could not find question data for ${decodedFileName}`);
         }
         return res.json();
       })
@@ -32,7 +33,18 @@ function PaperPage() {
         setError(err.message);
         setLoading(false);
       });
-  }, [year]);
+  }, [fileName]);
+
+  // Helper to get a clean, human-readable display title from the filename
+  const getDisplayTitle = () => {
+    if (!fileName) return "GATE CS SOLVED PAPER";
+    const decoded = decodeURIComponent(fileName);
+    // Converts "gate-2026-set-2.json" -> "GATE 2026 SET 2"
+    return decoded
+      .replace('.json', '')
+      .replace(/-/g, ' ')
+      .toUpperCase();
+  };
 
   // Loading Screen
   if (loading) {
@@ -70,9 +82,9 @@ function PaperPage() {
         </div>
 
         {/* Block 1: Heading Block */}
-        <div className="w-full bg-[#E5E5E5] min-h-[120px] md:min-h-[160px] flex flex-col items-center justify-center rounded-lg p-4">
+        <div className="w-full bg-[#E5E5E5] min-h-[120px] md:min-h-[160px] flex flex-col items-center justify-center rounded-lg p-4 text-center">
           <span className="text-xl md:text-3xl text-black font-semibold tracking-wide">
-            GATE CS {year} SOLVED PAPER
+            {getDisplayTitle()}
           </span>
           <span className="text-sm text-gray-600 mt-2 font-medium">
             Double-check formulas and solutions with interactive step-by-step guidance
@@ -87,7 +99,7 @@ function PaperPage() {
           <div className="flex flex-wrap gap-2">
             {questions.map((q, idx) => (
               <button
-                key={q.number}
+                key={q.number || idx}
                 onClick={() => setSelectedIdx(idx)}
                 className={`w-12 h-12 text-sm font-bold rounded-md border transition-all flex items-center justify-center ${
                   selectedIdx === idx
@@ -95,7 +107,7 @@ function PaperPage() {
                     : "bg-white text-black border-gray-300 hover:bg-gray-100"
                 }`}
               >
-                {q.number}
+                {q.number || (idx + 1)}
               </button>
             ))}
           </div>
@@ -108,7 +120,7 @@ function PaperPage() {
             {/* Subject and Marks Metadata header */}
             <div className="border-b border-gray-400 pb-3 mb-6 flex justify-between items-center text-black">
               <span className="font-bold text-sm tracking-wider uppercase">
-                Question {currentQuestion?.number} • {currentQuestion?.subject} ({currentQuestion?.type})
+                Question {currentQuestion?.number} • {currentQuestion?.subject || currentQuestion?.tag?.join(", ") || "General"} ({currentQuestion?.type})
               </span>
               <span className="font-semibold text-sm">
                 Marks: {currentQuestion?.marks}

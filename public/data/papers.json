@@ -1,0 +1,24 @@
+[
+  {
+    "id": "2026-set2",
+    "year": "2026",
+    "displayName": "GATE CS 2026 (Set 2)",
+    "fileName": "gate-2026-set-2.json"
+  },
+    {
+    "id": "2026-set1",
+    "year": "2026",
+    "displayName": "GATE CS 2026 (Set 1)",
+    "fileName": "gate-2026-set-1.json"
+  },  {
+    "id": "2025",
+    "year": "2025",
+    "displayName": "GATE CS 2025",
+    "fileName": "gate-2025.json"
+  } , {
+    "id": "2024",
+    "year": "2024",
+    "displayName": "GATE CS 2024",
+    "fileName": "gate-2024.json"
+  }
+]

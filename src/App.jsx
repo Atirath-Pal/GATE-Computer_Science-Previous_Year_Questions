@@ -7,7 +7,8 @@ function App() {
     <HashRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/gate/:year" element={<PaperPage />} />
+        {/* Updated path parameter to support direct, unique file loading */}
+        <Route path="/gate/:fileName" element={<PaperPage />} />
       </Routes>
     </HashRouter>
   );

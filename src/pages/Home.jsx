@@ -1,7 +1,30 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 function Home() {
-  const gateYears = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
+  const [papers, setPapers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Dynamically fetch available papers from your registry
+  useEffect(() => {
+    const registryUrl = `${import.meta.env.BASE_URL}data/papers.json`;
+    
+    fetch(registryUrl)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch papers catalog");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setPapers(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error loading papers configuration:", err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 antialiased font-sans relative overflow-hidden flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
@@ -47,7 +70,7 @@ function Home() {
           </div>
         </header>
 
-        {/* Year Grid Section - EXPLODING ACROSS THE SCREEN */}
+        {/* Year Grid Section */}
         <main className="flex flex-col gap-4 flex-1">
           <div className="flex items-center justify-between border-b border-slate-900 pb-2">
             <h2 className="text-sm font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
@@ -57,39 +80,45 @@ function Home() {
           </div>
           
           {/* Fully Responsive dynamic screen stretching layout */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 flex-1 auto-rows-fr">
-            {gateYears.map((year) => (
-              <Link 
-                key={year}
-                to={`/gate/${year}`}
-                className="group relative bg-slate-900/60 hover:bg-slate-950 border border-slate-800/80 hover:border-indigo-500 rounded-xl p-6 transition-all duration-300 flex flex-col justify-between shadow-xl overflow-hidden active:scale-[0.98]"
-              >
-                {/* Neon Accent Glow on Hover */}
-                <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                
-                <div className="flex justify-between items-start z-10">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-bold tracking-widest text-indigo-400 uppercase">
-                      Interactive Simulator
-                    </span>
-                    <h3 className="text-2xl font-black text-white mt-1 group-hover:text-indigo-400 transition-colors">
-                      GATE {year}
-                    </h3>
+          {loading ? (
+            <div className="flex items-center justify-center py-20 flex-1">
+              <span className="text-slate-500 text-lg font-medium animate-pulse">Scanning Archive Database...</span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 flex-1 auto-rows-fr">
+              {papers.map((paper) => (
+                <Link 
+                  key={paper.id}
+                  to={`/gate/${encodeURIComponent(paper.fileName)}`}
+                  className="group relative bg-slate-900/60 hover:bg-slate-950 border border-slate-800/80 hover:border-indigo-500 rounded-xl p-6 transition-all duration-300 flex flex-col justify-between shadow-xl overflow-hidden active:scale-[0.98]"
+                >
+                  {/* Neon Accent Glow on Hover */}
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                  
+                  <div className="flex justify-between items-start z-10">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold tracking-widest text-indigo-400 uppercase">
+                        Interactive Simulator
+                      </span>
+                      <h3 className="text-xl font-black text-white mt-1 group-hover:text-indigo-400 transition-colors">
+                        {paper.displayName}
+                      </h3>
+                    </div>
+                    <div className="h-7 px-2.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-bold text-slate-400 flex items-center justify-center group-hover:border-indigo-500/30 group-hover:text-white transition-all">
+                      65 Qs
+                    </div>
                   </div>
-                  <div className="h-7 px-2.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-bold text-slate-400 flex items-center justify-center group-hover:border-indigo-500/30 group-hover:text-white transition-all">
-                    65 Qs
-                  </div>
-                </div>
 
-                <div className="mt-8 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400 group-hover:text-white transition-colors z-10">
-                  <span>Launch Workspace</span>
-                  <span className="transform group-hover:translate-x-1.5 transition-transform duration-300 text-indigo-400 text-base">
-                    ➔
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
+                  <div className="mt-8 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400 group-hover:text-white transition-colors z-10">
+                    <span>Launch Workspace</span>
+                    <span className="transform group-hover:translate-x-1.5 transition-transform duration-300 text-indigo-400 text-base">
+                      ➔
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </main>
       </div>
 
