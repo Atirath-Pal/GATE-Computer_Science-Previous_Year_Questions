@@ -14,7 +14,10 @@ function PaperPage() {
     setError(null);
     setSelectedIdx(0); // Reset to question 1 when swapping years
 
-    fetch(`/data/questions/gate-${year}.json`)
+    // Using import.meta.env.BASE_URL handles subdirectory routing on GitHub Pages perfectly
+    const fetchUrl = `${import.meta.env.BASE_URL}data/questions/gate-${year}.json`;
+
+    fetch(fetchUrl)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`Could not find question data for GATE CS ${year}`);
@@ -40,7 +43,7 @@ function PaperPage() {
     );
   }
 
-  // Error Screen (e.g., if you click a year that doesn't have a JSON file yet)
+  // Error Screen
   if (error) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white p-6">
@@ -66,7 +69,7 @@ function PaperPage() {
           </Link>
         </div>
 
-        {/* Block 1: Heading Block (Centered text) */}
+        {/* Block 1: Heading Block */}
         <div className="w-full bg-[#E5E5E5] min-h-[120px] md:min-h-[160px] flex flex-col items-center justify-center rounded-lg p-4">
           <span className="text-xl md:text-3xl text-black font-semibold tracking-wide">
             GATE CS {year} SOLVED PAPER
@@ -76,7 +79,7 @@ function PaperPage() {
           </span>
         </div>
 
-        {/* Block 2: 65 Question Button Block */}
+        {/* Block 2: Question Selection Grid */}
         <div className="w-full bg-[#E5E5E5] p-6 rounded-lg">
           <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">
             Select Question ({questions.length} available)
@@ -98,10 +101,9 @@ function PaperPage() {
           </div>
         </div>
 
-        {/* Block 3: Selected Question Block */}
+        {/* Block 3: Selected Question Area */}
         <div className="w-full bg-[#E5E5E5] min-h-[500px] rounded-lg p-6 md:p-10 flex flex-col justify-between">
           
-          {/* Question Details Area */}
           <div>
             {/* Subject and Marks Metadata header */}
             <div className="border-b border-gray-400 pb-3 mb-6 flex justify-between items-center text-black">
@@ -120,7 +122,7 @@ function PaperPage() {
               </p>
             </div>
 
-            {/* Answer Options Grid (Displays only if there are options, like MCQs & MSQs) */}
+            {/* Answer Options Grid */}
             {currentQuestion?.options ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
                 {currentQuestion.options.map((opt, oIdx) => (
@@ -136,7 +138,7 @@ function PaperPage() {
                 ))}
               </div>
             ) : (
-              /* For NAT questions, show a clean numerical input placeholder */
+              /* For NAT questions */
               <div className="max-w-md bg-white border border-gray-300 p-4 rounded-lg shadow-sm">
                 <span className="text-gray-500 text-sm block mb-2 font-semibold uppercase">Numerical Answer Input</span>
                 <input 
