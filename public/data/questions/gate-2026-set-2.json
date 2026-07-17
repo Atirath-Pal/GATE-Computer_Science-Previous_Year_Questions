@@ -34,5 +34,226 @@
   ],
   "correctAnswer": ["C"],
   "videoUrl": "https://youtu.be/your-video-id"
-  }
+  },{
+  "id": "2026-set2-3",
+  "number": 3,
+  "tag": ["General Aptitude"],
+  "type": "MCQ",
+  "marks": 1,
+  "questionText": "A day can only be cloudy or sunny. The probability of a day being cloudy is 0.5, independent of the condition on other days. What is the probability that in any given four days, there will be three cloudy days and one sunny day?",
+  "imageUrl": null,
+  "optionsType": "text",
+  "options": [
+    "1/4",
+    "3/4",
+    "2/3",
+    "3/8"
+  ],
+  "correctAnswer": ["A"],
+  "videoUrl": "https://youtu.be/your-video-id"
+},{
+  "id": "2026-set2-4",
+  "number": 4,
+  "tag": ["General Aptitude"],
+  "type": "MCQ",
+  "marks": 1,
+  "questionText": "The values of Stock A and Stock B on a particular day are Rs. 50 and Rs. 80, respectively. An investor invests Rs. 100 in Stock A and Rs. 80 in Stock B. He sells all the stocks the next day when the value of Stock A is Rs. 55 and Stock B is Rs. 70. The profit made by the investor is Rs. __________",
+  "imageUrl": null,
+  "optionsType": "text",
+  "options": [
+    "0",
+    "5",
+    "10",
+    "20"
+  ],
+  "correctAnswer": ["A"],
+  "videoUrl": "https://youtu.be/your-video-id"
+},{
+  "id": "2026-set2-5",
+  "number": 5,
+  "tag": ["General Aptitude"],
+  "type": "MCQ",
+  "marks": 1,
+  "questionText": "‘When it is raining, peacocks dance.’\n\nBased only on this sentence, which one of the following options is necessarily true?",
+  "imageUrl": null,
+  "optionsType": "text",
+  "options": [
+    "Peacocks dance only when it is raining.",
+    "When peacocks dance, it is raining.",
+    "When peacocks are not dancing, it is not raining.",
+    "When it is not raining, peacocks do not dance."
+  ],
+  "correctAnswer": ["C"],
+  "videoUrl": "https://youtu.be/your-video-id"
+},{
+  "id": "2026-set2-6",
+  "number": 6,
+  "tag": ["General Aptitude"],
+  "type": "MCQ",
+  "marks": 2,
+  "questionText": "Water : P :: Food : Q\n\nChoose the P and Q combination from the options below to form a meaningful analogy.",
+  "imageUrl": null,
+  "optionsType": "text",
+  "options": [
+    "P = Thirst; Q = Hunger",
+    "P = Drink; Q = Hunger",
+    "P = Thirst; Q = Satiated",
+    "P = Wet; Q = Critic"
+  ],
+  "correctAnswer": ["A"],
+  "videoUrl": "https://youtu.be/your-video-id"
+},{
+  "id": "2026-set2-7",
+  "number": 7,
+  "tag": ["General Aptitude"],
+  "type": "MCQ",
+  "marks": 2,
+  "questionText": "Two tiles are missing in Panel I. Which one of the options in Panel II is the appropriate choice for the missing tiles?",
+  "imageUrl": "data/images/gate-2026-set-2/q7.png",
+  "optionsType": "text",
+  "options": [
+    "(i)",
+    "(ii)",
+    "(iii)",
+    "(iv)"
+  ],
+  "correctAnswer": ["A"],
+  "videoUrl": "https://youtu.be/your-video-id"
+},{
+  "id": "2026-set2-8",
+  "number": 8,
+  "tag": ["General Aptitude"],
+  "type": "MCQ",
+  "marks": 2,
+  "questionText": "Figures (i) and (ii) represent intercity highway systems. The black dots represent cities and the line segments between them represent intercity highways. A salesperson needs to make a trip. She needs to start from a city, visit each of the remaining cities exactly once, and finally return to the same city from which she started.\n\nWhich one of the following options is then true?",
+  "imageUrl": "/data/images/gate-2026-set-2/q8.png",
+  "optionsType": "text",
+  "options": [
+    "Such a trip is possible for (i), but not for (ii).",
+    "Such a trip is possible for (ii), but not for (i).",
+    "Such a trip is possible for both (i) and (ii).",
+    "Such a trip is possible neither for (i) nor for (ii)."
+  ],
+  "correctAnswer": ["A"],
+  "videoUrl": "https://youtu.be/your-video-id"
+},{
+  "id": "2026-set2-9",
+  "number": 9,
+  "tag": ["General Aptitude"],
+  "type": "MCQ",
+  "marks": 2,
+  "questionText": "The figure in Panel I below is a grid of cells with four rows and four columns. The numbers on the top and on the left represent the number of cells that are to be shaded in that column and row, respectively. Which one of the options shown in Panel II below represents the grid shaded correctly?",
+  "imageUrl": "/data/images/gate-2026-set-2/q9.png",
+  "optionsType": "text",
+  "options": [
+    "(i)",
+    "(ii)",
+    "(iii)",
+    "(iv)"
+  ],
+  "correctAnswer": ["B"],
+  "videoUrl": "https://youtu.be/your-video-id"
+},{
+  "id": "2026-set2-10",
+  "number": 10,
+  "tag": ["General Aptitude"],
+  "type": "MCQ",
+  "marks": 2,
+  "questionText": "An unbiased six-faced dice whose faces are marked with numbers 1, 2, 3, 4, 5, and 6 is rolled twice in succession and the number on the top face is recorded each time. The probability that the sum of the two recorded numbers is a prime number is __________",
+  "imageUrl": null,
+  "optionsType": "text",
+  "options": [
+    "³⁄₃₆",
+    "¹³⁄₃₆",
+    "¹⁵⁄₃₆",
+    "¹⁹⁄₃₆"
+  ],
+  "correctAnswer": ["C"],
+  "videoUrl": "https://youtu.be/your-video-id"
+},{
+  "id": "2026-set2-11",
+  "number": 11,
+  "tag": ["Discrete Mathematics"],
+  "type": "MCQ",
+  "marks": 1,
+  "questionText": "For two different persons x and y, the predicate M(x,y) denotes that x knows y. Consider the following statement.\n\nThere is a person who does not know anyone else, but that person is known by everyone else.\n\nWhich one of the following expressions represents the above statement?",
+  "imageUrl": null,
+  "optionsType": "text",
+  "options": [
+    "(∃y)(∀x) ((x ≠ y) → (M(x,y) ∧ ¬M(y,x)))",
+    "(∀y)(∃x) ((x ≠ y) → (M(x,y) ∧ ¬M(y,x)))",
+    "(∃y)(∃x) ((x ≠ y) → (M(x,y) ∧ ¬M(y,x)))",
+    "(∀y)(∀x) ((x ≠ y) → (M(x,y) ∧ ¬M(y,x)))"
+  ],
+  "correctAnswer": ["A"],
+  "videoUrl": "https://youtu.be/your-video-id"
+},{
+  "id": "2026-set2-12",
+  "number": 12,
+  "tag": ["Data Structures"],
+  "type": "MCQ",
+  "marks": 1,
+  "questionText": "The set T represents various traversals over binary tree. The set S represents the order of visiting nodes during a traversal.\n\nWhich one of the following is the correct match from T to S ?",
+  "imageUrl": "/data/images/gate-2026-set-2/q12.png",
+  "optionsType": "text",
+  "options": [
+    "I – L, II – M, III – N",
+    "I – M, II – L, III – N",
+    "I – N, II – M, III – L",
+    "I – L, II – N, III – M"
+  ],
+  "correctAnswer": ["A"],
+  "videoUrl": "https://youtu.be/your-video-id"
+},{
+  "id": "2026-set2-13",
+  "number": 13,
+  "tag": ["Theory of Computation"],
+  "type": "MCQ",
+  "marks": 1,
+  "questionText": "Which one of the following statements is equivalent to the following assertion?\n\nTuring machine M decides the language L ⊆ {0,1}*",
+  "imageUrl": null,
+  "optionsType": "text",
+  "options": [
+    "Turing machine M halts on all input strings in {0,1}*",
+    "Turing machine M accepts all input strings in L",
+    "Turing machine M rejects all input strings in {0,1}* – L",
+    "Turing machine M accepts all input strings in L and rejects all input strings in {0,1}* – L"
+  ],
+  "correctAnswer": ["D"],
+  "videoUrl": "https://youtu.be/your-video-id"
+},{
+  "id": "2026-set2-14",
+  "number": 14,
+  "tag": ["Engineering Mathematics"],
+  "type": "MCQ",
+  "marks": 1,
+  "questionText": "The probability density function $f(x)$ of a random variable $X$ which takes real values is\nWhich one of the following statements is correct about the random variable $X$? \n\nNote : writing $exp(y)$ is exactly the same as writing $e^y$",
+  "imageUrl": "/data/images/gate-2026-set-2/q14.png",
+  "optionsType": "text",
+  "options": [
+    "$X$ is an exponential random variable",
+    "$X$ is a normal random variable",
+    "$X$ is a Poisson random variable",
+    "$X$ is a uniform random variable"
+  ],
+  "correctAnswer": ["B"],
+  "videoUrl": "https://youtu.be/your-video-id"
+},{
+  "id": "2026-set2-15",
+  "number": 15,
+  "tag": ["Database Management Systems"],
+  "type": "MCQ",
+  "marks": 1,
+  "questionText": "In the context of DBMS, consider the two sets T and S given below.\nWhich one of the following is the correct match from T to S ?",
+  "imageUrl": "/data/images/gate-2026-set-2/q15.png",
+  "optionsType": "text",
+  "options": [
+    "I – L, II – M, III – N",
+    "I – M, II – L, III – N",
+    "I – N, II – M, III – L",
+    "I – N, II – L, III – M"
+  ],
+  "correctAnswer": ["C"],
+  "videoUrl": "https://youtu.be/your-video-id"
+}
 ]
