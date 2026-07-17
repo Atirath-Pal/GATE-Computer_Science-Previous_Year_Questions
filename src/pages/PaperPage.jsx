@@ -15,7 +15,6 @@ function PaperPage() {
     setSelectedIdx(0); // Reset to question 1 when swapping papers
 
     const decodedFileName = decodeURIComponent(fileName);
-    // Fetch directly from the questions directory
     const fetchUrl = `${import.meta.env.BASE_URL}data/questions/${decodedFileName}`;
 
     fetch(fetchUrl)
@@ -39,11 +38,18 @@ function PaperPage() {
   const getDisplayTitle = () => {
     if (!fileName) return "GATE CS SOLVED PAPER";
     const decoded = decodeURIComponent(fileName);
-    // Converts "gate-2026-set-2.json" -> "GATE 2026 SET 2"
     return decoded
       .replace('.json', '')
       .replace(/-/g, ' ')
       .toUpperCase();
+  };
+
+  // Helper to safely clean and prefix image URLs with base paths
+  const resolveImageUrl = (path) => {
+    if (!path) return '';
+    // Strip any leading slash to avoid double slashes when joining with BASE_URL
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+    return `${import.meta.env.BASE_URL}${cleanPath}`;
   };
 
   // Loading Screen
@@ -128,11 +134,28 @@ function PaperPage() {
             </div>
 
             {/* Main Question Text */}
-            <div className="mb-8">
+            <div className="mb-6">
               <p className="text-lg md:text-2xl text-black font-medium leading-relaxed whitespace-pre-line">
                 {currentQuestion?.questionText}
               </p>
             </div>
+
+            {/* Render Question Image if it exists */}
+            {currentQuestion?.imageUrl && (
+              <div className="mb-8 max-w-full flex justify-start">
+                <div className="bg-white border border-gray-300 rounded-lg p-4 shadow-sm inline-block">
+                  <img 
+                    src={resolveImageUrl(currentQuestion.imageUrl)} 
+                    alt={`Diagram for Question ${currentQuestion.number}`}
+                    className="max-h-[350px] w-auto max-w-full object-contain rounded"
+                    onError={(e) => {
+                      console.error("Failed to load image:", e.target.src);
+                      e.target.style.display = 'none'; // hide broken image icons gracefully
+                    }}
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Answer Options Grid */}
             {currentQuestion?.options ? (
