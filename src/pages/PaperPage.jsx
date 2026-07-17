@@ -1,34 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-
-// KaTeX imports for high-performance math rendering
-import 'katex/dist/katex.min.css';
-import { InlineMath, BlockMath } from 'react-katex';
-
-// --- NEW COMPONENT: MathText Parser ---
-// This safely splits mixed strings (text + math) and renders them perfectly
-const MathText = ({ text }) => {
-  if (!text) return null;
-  
-  // Regex to match block math ($$...$$) and inline math ($...$)
-  const regex = /(\$\$[\s\S]+?\$\$|\$[\s\S]+?\$)/g;
-  const parts = text.split(regex);
-
-  return (
-    <span>
-      {parts.map((part, index) => {
-        if (part.startsWith('$$') && part.endsWith('$$')) {
-          const math = part.slice(2, -2);
-          return <BlockMath key={index} math={math} />;
-        } else if (part.startsWith('$') && part.endsWith('$')) {
-          const math = part.slice(1, -1);
-          return <InlineMath key={index} math={math} />;
-        }
-        return <React.Fragment key={index}>{part}</React.Fragment>;
-      })}
-    </span>
-  );
-};
+import QuestionSelector from '../components/QuestionSelector';
+import QuestionViewer from '../components/QuestionViewer';
+import QuestionFooter from '../components/QuestionFooter';
 
 function PaperPage() {
   const { fileName } = useParams();
@@ -66,7 +40,7 @@ function PaperPage() {
   }, [fileName]);
 
   const getDisplayTitle = () => {
-    if (!fileName) return "GATE CS SOLVED PAPER";
+    if (!fileName) return 'GATE CS SOLVED PAPER';
     const decoded = decodeURIComponent(fileName);
     return decoded.replace('.json', '').replace(/-/g, ' ').toUpperCase();
   };
@@ -79,16 +53,16 @@ function PaperPage() {
 
   const handleOptionSelect = (optLetter) => {
     if (checkedStatus[selectedIdx]) return;
-    setUserAnswers(prev => ({ ...prev, [selectedIdx]: optLetter }));
+    setUserAnswers((prev) => ({ ...prev, [selectedIdx]: optLetter }));
   };
 
   const handleNatChange = (e) => {
     if (checkedStatus[selectedIdx]) return;
-    setUserAnswers(prev => ({ ...prev, [selectedIdx]: e.target.value }));
+    setUserAnswers((prev) => ({ ...prev, [selectedIdx]: e.target.value }));
   };
 
   const handleCheckAnswer = () => {
-    setCheckedStatus(prev => ({ ...prev, [selectedIdx]: true }));
+    setCheckedStatus((prev) => ({ ...prev, [selectedIdx]: true }));
   };
 
   if (loading) {
@@ -114,16 +88,16 @@ function PaperPage() {
   const currentQuestion = questions[selectedIdx];
   const isCurrentlyChecked = checkedStatus[selectedIdx];
   const currentAnswer = userAnswers[selectedIdx];
-  const optType = currentQuestion?.optionsType || "text"; // Fallback to text
+  const optType = currentQuestion?.optionsType || 'text';
 
-  const correctAnsArray = currentQuestion?.correctAnswer 
+  const correctAnsArray = currentQuestion?.correctAnswer
     ? (Array.isArray(currentQuestion.correctAnswer) ? currentQuestion.correctAnswer : [currentQuestion.correctAnswer])
     : [];
 
   return (
     <div className="min-h-screen bg-white p-4 md:p-10 flex flex-col items-center">
       <div className="w-full max-w-[1280px] flex flex-col gap-6 md:gap-8">
-        
+
         <div className="self-start">
           <Link to="/" className="text-blue-600 hover:underline font-medium">
             ← Back to All Papers
@@ -139,178 +113,34 @@ function PaperPage() {
           </span>
         </div>
 
-        {/* Question Selection Grid */}
-        <div className="w-full bg-[#E5E5E5] p-6 rounded-lg">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">
-            Select Question ({questions.length} available)
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {questions.map((q, idx) => {
-              const hasAnswered = userAnswers[idx] !== undefined && userAnswers[idx] !== "";
-              const isChecked = checkedStatus[idx];
-              
-              let btnClass = "bg-white text-black border-gray-300 hover:bg-gray-100";
-              if (selectedIdx === idx) {
-                btnClass = "bg-black text-white border-black scale-105 shadow-md";
-              } else if (isChecked) {
-                btnClass = "bg-gray-300 text-gray-600 border-gray-400 opacity-60";
-              } else if (hasAnswered) {
-                btnClass = "bg-blue-100 text-blue-800 border-blue-300";
-              }
+        <QuestionSelector
+          questions={questions}
+          selectedIdx={selectedIdx}
+          setSelectedIdx={setSelectedIdx}
+          userAnswers={userAnswers}
+          checkedStatus={checkedStatus}
+        />
 
-              return (
-                <button
-                  key={q.number || idx}
-                  onClick={() => setSelectedIdx(idx)}
-                  className={`w-12 h-12 text-sm font-bold rounded-md border transition-all flex items-center justify-center ${btnClass}`}
-                >
-                  {q.number || (idx + 1)}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Selected Question Area */}
         <div className="w-full bg-[#E5E5E5] min-h-[500px] rounded-lg p-6 md:p-10 flex flex-col justify-between shadow-inner">
-          
-          <div>
-            <div className="border-b border-gray-400 pb-3 mb-6 flex justify-between items-center text-black">
-              <span className="font-bold text-sm tracking-wider uppercase">
-                Question {currentQuestion?.number} • {currentQuestion?.subject || currentQuestion?.tag?.join(", ") || "General"} ({currentQuestion?.type})
-              </span>
-              <span className="font-semibold text-sm">
-                Marks: {currentQuestion?.marks}
-              </span>
-            </div>
+          <QuestionViewer
+            question={currentQuestion}
+            currentAnswer={currentAnswer}
+            isCurrentlyChecked={isCurrentlyChecked}
+            handleOptionSelect={handleOptionSelect}
+            handleNatChange={handleNatChange}
+            optType={optType}
+            correctAnsArray={correctAnsArray}
+            resolveImageUrl={resolveImageUrl}
+          />
 
-            {/* UPGRADED: Question Text with MathText Rendering */}
-            <div className="mb-6">
-              <div className="text-lg md:text-2xl text-black font-medium leading-relaxed whitespace-pre-line">
-                <MathText text={currentQuestion?.questionText} />
-              </div>
-            </div>
-
-            {currentQuestion?.imageUrl && (
-              <div className="mb-8 max-w-full flex justify-start">
-                <div className="bg-white border border-gray-300 rounded-lg p-4 shadow-sm inline-block">
-                  <img 
-                    src={resolveImageUrl(currentQuestion.imageUrl)} 
-                    alt={`Diagram for Question ${currentQuestion.number}`}
-                    className="max-h-[350px] w-auto max-w-full object-contain rounded"
-                    onError={(e) => { e.target.style.display = 'none'; }}
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* UPGRADED: Polymorphic Answer Options Grid */}
-            {currentQuestion?.options ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
-                {currentQuestion.options.map((opt, oIdx) => {
-                  const optLetter = String.fromCharCode(65 + oIdx);
-                  const isSelected = currentAnswer === optLetter;
-                  const isCorrectOption = correctAnsArray.includes(optLetter);
-                  
-                  let optionStyle = "bg-white border-gray-300 hover:border-black";
-                  if (isCurrentlyChecked) {
-                    if (isCorrectOption) optionStyle = "bg-emerald-100 border-emerald-500 ring-2 ring-emerald-500 shadow-md";
-                    else if (isSelected && !isCorrectOption) optionStyle = "bg-red-100 border-red-500 ring-2 ring-red-500 opacity-80";
-                    else optionStyle = "bg-gray-100 border-gray-200 opacity-50";
-                  } else if (isSelected) {
-                    optionStyle = "bg-blue-50 border-blue-500 ring-2 ring-blue-500 shadow-md";
-                  }
-
-                  // Determine content based on optionsType
-                  let optionContent;
-                  if (optType === "image") {
-                    optionContent = (
-                      <img 
-                        src={resolveImageUrl(opt)} 
-                        alt={`Option ${optLetter}`} 
-                        className="max-h-[120px] object-contain rounded"
-                      />
-                    );
-                  } else if (optType === "latex") {
-                    // Renders pure latex string without requiring $ delimiters in the JSON
-                    optionContent = <InlineMath math={opt} />;
-                  } else {
-                    // Defaults to text, passing through MathText just in case it contains inline $math$
-                    optionContent = <MathText text={opt} />;
-                  }
-
-                  return (
-                    <div 
-                      key={oIdx} 
-                      onClick={() => handleOptionSelect(optLetter)}
-                      className={`border p-5 rounded-lg cursor-pointer transition-all flex items-center ${optionStyle} ${isCurrentlyChecked ? 'cursor-default' : 'hover:-translate-y-0.5'}`}
-                    >
-                      <span className={`font-bold mr-4 ${isCurrentlyChecked && isCorrectOption ? 'text-emerald-700' : isCurrentlyChecked && isSelected && !isCorrectOption ? 'text-red-700' : isSelected ? 'text-blue-700' : 'text-gray-600'}`}>
-                        {optLetter})
-                      </span>
-                      <span className={`font-medium w-full overflow-x-auto ${isCurrentlyChecked && isCorrectOption ? 'text-emerald-900' : isCurrentlyChecked && isSelected && !isCorrectOption ? 'text-red-900' : 'text-black'}`}>
-                        {optionContent}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="max-w-md">
-                <div className={`bg-white border p-4 rounded-lg shadow-sm transition-all ${isCurrentlyChecked ? 'border-gray-300' : (currentAnswer ? 'border-blue-500 ring-1 ring-blue-500' : 'border-gray-300')}`}>
-                  <span className="text-gray-500 text-sm block mb-2 font-semibold uppercase">Numerical Answer Input</span>
-                  <input 
-                    type="text" 
-                    value={currentAnswer || ""}
-                    onChange={handleNatChange}
-                    disabled={isCurrentlyChecked}
-                    placeholder="Enter numerical value" 
-                    className={`w-full p-3 rounded border font-medium text-black focus:outline-none focus:border-blue-500 ${isCurrentlyChecked ? 'bg-gray-100 cursor-not-allowed border-gray-300' : 'bg-white border-gray-300'}`}
-                  />
-                </div>
-                
-                {isCurrentlyChecked && (
-                  <div className="mt-4 p-4 bg-emerald-100 border-l-4 border-emerald-500 rounded-r-lg flex items-center justify-between">
-                    <span className="font-semibold text-emerald-800">Accepted Answer / Range:</span>
-                    <span className="text-xl font-black text-emerald-900">{correctAnsArray.join(" OR ")}</span>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          <div className="border-t border-gray-400 pt-6 mt-10 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <button 
-              disabled={selectedIdx === 0}
-              onClick={() => setSelectedIdx(prev => prev - 1)}
-              className="w-full sm:w-auto px-5 py-2.5 text-sm font-bold bg-white text-black border border-gray-300 rounded-md hover:bg-gray-100 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              ← PREVIOUS
-            </button>
-            
-            <button 
-              onClick={handleCheckAnswer}
-              disabled={!currentAnswer || isCurrentlyChecked}
-              className={`w-full sm:w-auto px-8 py-3 text-sm font-black tracking-widest uppercase rounded-md transition-all shadow-md ${
-                isCurrentlyChecked 
-                  ? 'bg-emerald-500 text-white shadow-emerald-500/30' 
-                  : !currentAnswer
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-indigo-500/30 active:scale-95'
-              }`}
-            >
-              {isCurrentlyChecked ? '✓ ANSWER CHECKED' : 'CHECK ANSWER'}
-            </button>
-
-            <button 
-              disabled={selectedIdx === questions.length - 1}
-              onClick={() => setSelectedIdx(prev => prev + 1)}
-              className="w-full sm:w-auto px-5 py-2.5 text-sm font-bold bg-black text-white rounded-md hover:bg-gray-900 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              NEXT →
-            </button>
-          </div>
-
+          <QuestionFooter
+            selectedIdx={selectedIdx}
+            questionsLength={questions.length}
+            setSelectedIdx={setSelectedIdx}
+            handleCheckAnswer={handleCheckAnswer}
+            currentAnswer={currentAnswer}
+            isCurrentlyChecked={isCurrentlyChecked}
+          />
         </div>
       </div>
     </div>
