@@ -1,5 +1,34 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+
+// KaTeX imports for high-performance math rendering
+import 'katex/dist/katex.min.css';
+import { InlineMath, BlockMath } from 'react-katex';
+
+// --- NEW COMPONENT: MathText Parser ---
+// This safely splits mixed strings (text + math) and renders them perfectly
+const MathText = ({ text }) => {
+  if (!text) return null;
+  
+  // Regex to match block math ($$...$$) and inline math ($...$)
+  const regex = /(\$\$[\s\S]+?\$\$|\$[\s\S]+?\$)/g;
+  const parts = text.split(regex);
+
+  return (
+    <span>
+      {parts.map((part, index) => {
+        if (part.startsWith('$$') && part.endsWith('$$')) {
+          const math = part.slice(2, -2);
+          return <BlockMath key={index} math={math} />;
+        } else if (part.startsWith('$') && part.endsWith('$')) {
+          const math = part.slice(1, -1);
+          return <InlineMath key={index} math={math} />;
+        }
+        return <React.Fragment key={index}>{part}</React.Fragment>;
+      })}
+    </span>
+  );
+};
 
 function PaperPage() {
   const { fileName } = useParams();
@@ -8,18 +37,13 @@ function PaperPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // --- NEW STATE FOR INTERACTIVITY ---
-  // Stores the user's selected option or typed answer per question index
   const [userAnswers, setUserAnswers] = useState({});
-  // Stores whether the user has clicked "Check Answer" for a specific question index
   const [checkedStatus, setCheckedStatus] = useState({});
 
   useEffect(() => {
     setLoading(true);
     setError(null);
     setSelectedIdx(0);
-    
-    // Reset user progress when switching papers
     setUserAnswers({});
     setCheckedStatus({});
 
@@ -28,9 +52,7 @@ function PaperPage() {
 
     fetch(fetchUrl)
       .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Could not find question data for ${decodedFileName}`);
-        }
+        if (!res.ok) throw new Error(`Could not find question data for ${decodedFileName}`);
         return res.json();
       })
       .then((data) => {
@@ -55,28 +77,18 @@ function PaperPage() {
     return `${import.meta.env.BASE_URL}${cleanPath}`;
   };
 
-  // --- INTERACTIVE HANDLERS ---
   const handleOptionSelect = (optLetter) => {
-    if (checkedStatus[selectedIdx]) return; // Prevent changing answer after checking
-    setUserAnswers(prev => ({
-      ...prev,
-      [selectedIdx]: optLetter
-    }));
+    if (checkedStatus[selectedIdx]) return;
+    setUserAnswers(prev => ({ ...prev, [selectedIdx]: optLetter }));
   };
 
   const handleNatChange = (e) => {
-    if (checkedStatus[selectedIdx]) return; // Prevent changing after checking
-    setUserAnswers(prev => ({
-      ...prev,
-      [selectedIdx]: e.target.value
-    }));
+    if (checkedStatus[selectedIdx]) return;
+    setUserAnswers(prev => ({ ...prev, [selectedIdx]: e.target.value }));
   };
 
   const handleCheckAnswer = () => {
-    setCheckedStatus(prev => ({
-      ...prev,
-      [selectedIdx]: true
-    }));
+    setCheckedStatus(prev => ({ ...prev, [selectedIdx]: true }));
   };
 
   if (loading) {
@@ -102,8 +114,8 @@ function PaperPage() {
   const currentQuestion = questions[selectedIdx];
   const isCurrentlyChecked = checkedStatus[selectedIdx];
   const currentAnswer = userAnswers[selectedIdx];
+  const optType = currentQuestion?.optionsType || "text"; // Fallback to text
 
-  // Helper to safely format correct answer array for comparison
   const correctAnsArray = currentQuestion?.correctAnswer 
     ? (Array.isArray(currentQuestion.correctAnswer) ? currentQuestion.correctAnswer : [currentQuestion.correctAnswer])
     : [];
@@ -134,7 +146,6 @@ function PaperPage() {
           </h3>
           <div className="flex flex-wrap gap-2">
             {questions.map((q, idx) => {
-              // Visual indicators on the grid for attempted/checked questions
               const hasAnswered = userAnswers[idx] !== undefined && userAnswers[idx] !== "";
               const isChecked = checkedStatus[idx];
               
@@ -142,9 +153,9 @@ function PaperPage() {
               if (selectedIdx === idx) {
                 btnClass = "bg-black text-white border-black scale-105 shadow-md";
               } else if (isChecked) {
-                btnClass = "bg-gray-300 text-gray-600 border-gray-400 opacity-60"; // Checked indicator
+                btnClass = "bg-gray-300 text-gray-600 border-gray-400 opacity-60";
               } else if (hasAnswered) {
-                btnClass = "bg-blue-100 text-blue-800 border-blue-300"; // Answered but not checked indicator
+                btnClass = "bg-blue-100 text-blue-800 border-blue-300";
               }
 
               return (
@@ -173,10 +184,11 @@ function PaperPage() {
               </span>
             </div>
 
+            {/* UPGRADED: Question Text with MathText Rendering */}
             <div className="mb-6">
-              <p className="text-lg md:text-2xl text-black font-medium leading-relaxed whitespace-pre-line">
-                {currentQuestion?.questionText}
-              </p>
+              <div className="text-lg md:text-2xl text-black font-medium leading-relaxed whitespace-pre-line">
+                <MathText text={currentQuestion?.questionText} />
+              </div>
             </div>
 
             {currentQuestion?.imageUrl && (
@@ -186,35 +198,45 @@ function PaperPage() {
                     src={resolveImageUrl(currentQuestion.imageUrl)} 
                     alt={`Diagram for Question ${currentQuestion.number}`}
                     className="max-h-[350px] w-auto max-w-full object-contain rounded"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
+                    onError={(e) => { e.target.style.display = 'none'; }}
                   />
                 </div>
               </div>
             )}
 
-            {/* Answer Options Grid */}
+            {/* UPGRADED: Polymorphic Answer Options Grid */}
             {currentQuestion?.options ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
                 {currentQuestion.options.map((opt, oIdx) => {
-                  const optLetter = String.fromCharCode(65 + oIdx); // A, B, C, D
+                  const optLetter = String.fromCharCode(65 + oIdx);
                   const isSelected = currentAnswer === optLetter;
                   const isCorrectOption = correctAnsArray.includes(optLetter);
                   
-                  // Determine Dynamic Styling based on state
                   let optionStyle = "bg-white border-gray-300 hover:border-black";
-                  
                   if (isCurrentlyChecked) {
-                    if (isCorrectOption) {
-                      optionStyle = "bg-emerald-100 border-emerald-500 ring-2 ring-emerald-500 shadow-md"; // Reveal correct answer
-                    } else if (isSelected && !isCorrectOption) {
-                      optionStyle = "bg-red-100 border-red-500 ring-2 ring-red-500 opacity-80"; // Highlight user's wrong answer
-                    } else {
-                      optionStyle = "bg-gray-100 border-gray-200 opacity-50"; // Fade out other wrong options
-                    }
+                    if (isCorrectOption) optionStyle = "bg-emerald-100 border-emerald-500 ring-2 ring-emerald-500 shadow-md";
+                    else if (isSelected && !isCorrectOption) optionStyle = "bg-red-100 border-red-500 ring-2 ring-red-500 opacity-80";
+                    else optionStyle = "bg-gray-100 border-gray-200 opacity-50";
                   } else if (isSelected) {
-                    optionStyle = "bg-blue-50 border-blue-500 ring-2 ring-blue-500 shadow-md"; // User selection state
+                    optionStyle = "bg-blue-50 border-blue-500 ring-2 ring-blue-500 shadow-md";
+                  }
+
+                  // Determine content based on optionsType
+                  let optionContent;
+                  if (optType === "image") {
+                    optionContent = (
+                      <img 
+                        src={resolveImageUrl(opt)} 
+                        alt={`Option ${optLetter}`} 
+                        className="max-h-[120px] object-contain rounded"
+                      />
+                    );
+                  } else if (optType === "latex") {
+                    // Renders pure latex string without requiring $ delimiters in the JSON
+                    optionContent = <InlineMath math={opt} />;
+                  } else {
+                    // Defaults to text, passing through MathText just in case it contains inline $math$
+                    optionContent = <MathText text={opt} />;
                   }
 
                   return (
@@ -223,18 +245,17 @@ function PaperPage() {
                       onClick={() => handleOptionSelect(optLetter)}
                       className={`border p-5 rounded-lg cursor-pointer transition-all flex items-center ${optionStyle} ${isCurrentlyChecked ? 'cursor-default' : 'hover:-translate-y-0.5'}`}
                     >
-                      <span className={`font-bold mr-3 ${isCurrentlyChecked && isCorrectOption ? 'text-emerald-700' : isCurrentlyChecked && isSelected && !isCorrectOption ? 'text-red-700' : isSelected ? 'text-blue-700' : 'text-gray-600'}`}>
+                      <span className={`font-bold mr-4 ${isCurrentlyChecked && isCorrectOption ? 'text-emerald-700' : isCurrentlyChecked && isSelected && !isCorrectOption ? 'text-red-700' : isSelected ? 'text-blue-700' : 'text-gray-600'}`}>
                         {optLetter})
                       </span>
-                      <span className={`font-medium ${isCurrentlyChecked && isCorrectOption ? 'text-emerald-900' : isCurrentlyChecked && isSelected && !isCorrectOption ? 'text-red-900' : 'text-black'}`}>
-                        {opt}
+                      <span className={`font-medium w-full overflow-x-auto ${isCurrentlyChecked && isCorrectOption ? 'text-emerald-900' : isCurrentlyChecked && isSelected && !isCorrectOption ? 'text-red-900' : 'text-black'}`}>
+                        {optionContent}
                       </span>
                     </div>
                   );
                 })}
               </div>
             ) : (
-              /* For NAT questions */
               <div className="max-w-md">
                 <div className={`bg-white border p-4 rounded-lg shadow-sm transition-all ${isCurrentlyChecked ? 'border-gray-300' : (currentAnswer ? 'border-blue-500 ring-1 ring-blue-500' : 'border-gray-300')}`}>
                   <span className="text-gray-500 text-sm block mb-2 font-semibold uppercase">Numerical Answer Input</span>
@@ -248,7 +269,6 @@ function PaperPage() {
                   />
                 </div>
                 
-                {/* NAT Answer Reveal Box */}
                 {isCurrentlyChecked && (
                   <div className="mt-4 p-4 bg-emerald-100 border-l-4 border-emerald-500 rounded-r-lg flex items-center justify-between">
                     <span className="font-semibold text-emerald-800">Accepted Answer / Range:</span>
@@ -259,7 +279,6 @@ function PaperPage() {
             )}
           </div>
 
-          {/* Quick Nav Footer inside the Question box */}
           <div className="border-t border-gray-400 pt-6 mt-10 flex flex-col sm:flex-row justify-between items-center gap-4">
             <button 
               disabled={selectedIdx === 0}
@@ -269,7 +288,6 @@ function PaperPage() {
               ← PREVIOUS
             </button>
             
-            {/* The Check Answer Button */}
             <button 
               onClick={handleCheckAnswer}
               disabled={!currentAnswer || isCurrentlyChecked}
@@ -294,7 +312,6 @@ function PaperPage() {
           </div>
 
         </div>
-
       </div>
     </div>
   );
